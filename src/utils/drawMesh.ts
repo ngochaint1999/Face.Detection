@@ -15,6 +15,32 @@ export const drawMesh = (prediction: faceLandmarksDetection.Face, ctx: any) => {
     ].map((index) => keyPoints[index]);
     drawPath(ctx, points, true);
   }
+
+  const leftCheek = keyPoints[234];
+  const rightCheek = keyPoints[454];
+  const nose = keyPoints[1];
+
+  const leftDistance = Math.abs(nose.x - leftCheek.x);
+  const rightDistance = Math.abs(nose.x - rightCheek.x);
+
+  const directionThreshold = 100;
+  let mess = "";
+  // console.log("left: " + leftDistance)
+  // console.log("right: " + rightDistance)
+  // console.log("left cal: " + (leftDistance > rightDistance + directionThreshold ? "true" : "false"))
+  // console.log("right cal: " + (rightDistance > leftDistance + directionThreshold ? "true" : "false"))
+  if (leftDistance > rightDistance + directionThreshold) {
+    mess = 'Looking Left';
+  } else if (rightDistance > leftDistance + directionThreshold) {
+    mess = 'Looking Right';
+  } else {
+    mess = 'Facing Forward';
+  }
+
+  ctx.fillStyle = "red";
+  ctx.font = "30px Arial";
+  ctx.fillText(mess, 100,100)
+
   for (const keyPoint of keyPoints) {
     ctx.beginPath();
     ctx.arc(keyPoint.x, keyPoint.y, 1, 0, 3 * Math.PI);
