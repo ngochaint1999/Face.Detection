@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRef, useState } from 'react'
 import "@tensorflow/tfjs";
 // Register WebGL backend.
@@ -22,6 +23,7 @@ function App() {
   // Setup webcam and canvas
   const webcamRef = useRef(null)
   const canvasRef = useRef(null)
+  const imgRefs = useRef(null)
   const [loaded, setLoaded] = useState(false)
 
   // Load facemesh
@@ -29,7 +31,11 @@ function App() {
     const video = videoNode.target;
     if (video.readyState !== 4) return;
     if (loaded) return;
-    runDetector(video, canvasRef.current);
+    try {
+      runDetector(video, canvasRef.current, imgRefs.current)
+    } catch (err) {
+      alert("err")
+    }
     setLoaded(true);
   };
 
@@ -53,6 +59,12 @@ function App() {
           width={inputResolution.width}
           height={inputResolution.height}
           style={{ position: "absolute", zIndex: 10 }}
+        />
+        <canvas
+          ref={imgRefs}
+          width={200}
+          height={inputResolution.height}
+          style={{ position: "absolute", right: 0, zIndex: 11, background: "#242424" }}
         />
       </div>
     </div>
